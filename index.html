@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <title>Document</title>
+</head>
+
+<body class="w3-container w3-center" onload="init()">
+    <div id="showObjectList"> </div>
+    <script>
+        var OBJECT_LIST = "";
+
+        function init() {
+            fetch("https://raw.githubusercontent.com/jeetendra29gupta/Name_Thing/main/Name_Thing.json")
+                .then(response => response.json())
+                .then(data => {
+                    OBJECT_LIST = data.Name_Thing
+                    showHeader()
+                })
+                .catch(error => {
+                    if (!navigator.onLine) {
+                        alert(error + "\n\nNo Internet connection.\nPlease check your internet connection or try again later.");
+                    }else{ 
+			alert(error)
+		}
+
+                })
+        }
+
+        function showHeader() {
+            var showObjectList = document.getElementById("showObjectList");
+            showObjectList.innerHTML = "";
+            for (var key in OBJECT_LIST) {
+                showObjectList.innerHTML += `<button class="w3-button w3-block w3-black w3-section" onclick="showData(event)">${OBJECT_LIST[key].header}</button>`;
+                // console.log(OBJECT_LIST[key].header);
+                // console.log(OBJECT_LIST[key].folder);
+            }
+        }
+
+        function showData() {
+            var showObjectList = document.getElementById("showObjectList");
+            showObjectList.innerHTML = "";
+            showObjectList.innerHTML += `<button class="w3-button w3-block w3-black w3-section" onclick="init()">Home</button>`;
+            showObjectList.innerHTML += `<div class="w3-row-padding w3-section">`;
+            var title = event.target.innerHTML;
+            for (var key in OBJECT_LIST) {
+                if (OBJECT_LIST[key].header === title) {
+                    for (var item in OBJECT_LIST[key].items) {
+                        showObjectList.innerHTML += `
+                            <div class="w3-col s6" onclick="sound(event)">
+                                <img src="https://github.com/jeetendra29gupta/Name_Thing/blob/main/${OBJECT_LIST[key].folder}/${OBJECT_LIST[key].items[item].Name}.png?raw=true" alt="${OBJECT_LIST[key].items[item].Name}" width="100" height="100">
+                                <P>${OBJECT_LIST[key].items[item].Name.toUpperCase()}</P>
+                            </div>    
+                        `;
+                        // console.log(OBJECT_LIST[key].items[item])
+                    }
+                }
+            }
+            showObjectList.innerHTML += `</div>`;
+        }
+function sound(e) {
+    // console.log(e.target)
+var word = "";
+    if (e.target.alt) { word = e.target.alt }
+    if (e.target.innerHTML) { word = e.target.innerHTML }
+    var msg = new SpeechSynthesisUtterance(word);
+window.speechSynthesis.speak(msg);
+}
+    </script>
+</body>
+
+</html>
